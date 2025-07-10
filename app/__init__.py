@@ -10,7 +10,7 @@ def create_app():
     
     db.init_app(app)
 
-    from .models import User, Deck, Card, ReviewProgress  # on les importe ici
+    from .models import User, Deck, Card, ReviewProgress, LoginCode
     
     with app.app_context():
         db.create_all()  # crée les tables

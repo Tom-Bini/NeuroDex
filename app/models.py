@@ -1,16 +1,17 @@
 from . import db
-from datetime import datetime
+from datetime import datetime, timezone
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime,  default=lambda: datetime.now(timezone.utc))
 
 class Deck(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime,  default=lambda: datetime.now(timezone.utc))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Card(db.Model):
@@ -19,7 +20,7 @@ class Card(db.Model):
     type = db.Column(db.String(20), nullable=False, default='latex')
     question_text = db.Column(db.Text, nullable=False)
     answer_latex = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime,  default=lambda: datetime.now(timezone.utc))
 
 class ReviewProgress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,5 +28,11 @@ class ReviewProgress(db.Model):
     card_id = db.Column(db.Integer, db.ForeignKey('card.id'), nullable=False)
     ease_factor = db.Column(db.Float, default=2.5)
     interval = db.Column(db.Integer, default=1)
-    due_date = db.Column(db.DateTime, default=datetime.utcnow)
+    due_date = db.Column(db.DateTime,  default=lambda: datetime.now(timezone.utc))
     last_reviewed = db.Column(db.DateTime)
+
+class LoginCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), nullable=False)
+    code = db.Column(db.String(6), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
